@@ -157,7 +157,7 @@ CREATE TABLE Tasks (
 
 ### 3.6. WebAPI e endpoints (Semana 05)
 
-*Utilize um link para outra página de documentação contendo a descrição completa de cada endpoint. Ou descreva aqui cada endpoint criado para seu sistema.*  
+ 
 
 ### 3.7 Interface e Navegação (Semana 07)
 

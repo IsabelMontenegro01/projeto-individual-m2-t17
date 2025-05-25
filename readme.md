@@ -10,7 +10,9 @@ projeto-individual-m2-t17/
 ├── config/
 │   └── database.js
 ├── controllers/
-│   └── HomeController.js
+│   └── CategoryController.js
+│   └── TaskController.js
+│   └── UserController.js
 ├── documents/
 │   └── assets/
 │   └── wad.md
@@ -80,7 +82,7 @@ npm run init-db
 npm run dev
 ```
 
-6. O servidor estará disponível em: `http://localhost:8080`
+6. O servidor estará disponível em: `http://localhost:8080/api`
 
 ## 🛠️ Tecnologias Utilizadas
 
