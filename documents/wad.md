@@ -142,7 +142,7 @@ O sistema Taskly utiliza um banco de dados PostgreSQL estruturado para represent
 </div>
 <br>
 
-**🔸 Model: Users**
+**🔸 Model: Users**<br>
 Responsável por armazenar os dados dos usuários do sistema.
 
 Campos:
@@ -152,7 +152,7 @@ Campos:
 - *password:* senha criptografada (em produção)
 - *created_at:* data de criação
 
-**🔸 Model: Categories**
+**🔸 Model: Categories**<br>
 Representa as categorias de tarefas.
 
 Campos:
@@ -162,7 +162,7 @@ Campos:
 - *description:* descrição opcional
 - *created_at:* data de criação
 
-**🔸 Model: Tasks**
+**🔸 Model: Tasks**<br>
 Model principal da aplicação, responsável por armazenar as tarefas cadastradas pelos usuários.
 
 Campos:
