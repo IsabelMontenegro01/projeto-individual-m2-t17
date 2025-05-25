@@ -128,19 +128,86 @@ CREATE TABLE Tasks (
 
 
 
-### 3.1.1 BD e Models (Semana 5)
-*Descreva aqui os Models implementados no sistema web*
+### 3.1.1 BD e Models 
 
-### 3.2. Arquitetura (Semana 5)
+O sistema Taskly utiliza um banco de dados PostgreSQL estruturado para representar a lógica de tarefas, usuários e categorias. Os models são definidos diretamente nos controladores com consultas SQL utilizando a biblioteca pg, mas seguem claramente a arquitetura MVC e representam as entidades do domínio da aplicação. Isso pode ser visualizado na imagem abaixo:
 
-*Posicione aqui o diagrama de arquitetura da sua solução de aplicação web. Atualize sempre que necessário.*
+<div align="center">
+<sub>Figura 02 - Arquitetura MVC</sub>
+<img src="./assets/MVC.png" width="100%">
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+</div>
+<br>
 
-**Instruções para criação do diagrama de arquitetura**  
-- **Model**: A camada que lida com a lógica de negócios e interage com o banco de dados.
-- **View**: A camada responsável pela interface de usuário.
-- **Controller**: A camada que recebe as requisições, processa as ações e atualiza o modelo e a visualização.
-  
-*Adicione as setas e explicações sobre como os dados fluem entre o Model, Controller e View.*
+🔸 Model: Users
+Responsável por armazenar os dados dos usuários do sistema.
+Campos:
+
+id: identificador único (chave primária)
+
+name: nome do usuário
+
+email: email do usuário (único)
+
+password: senha criptografada (em produção)
+
+created_at: data de criação
+
+🔸 Model: Categories
+Representa as categorias de tarefas.
+Campos:
+
+id: identificador da categoria
+
+name: nome da categoria
+
+description: descrição opcional
+
+created_at: data de criação
+
+🔸 Model: Tasks
+Model principal da aplicação, responsável por armazenar as tarefas cadastradas pelos usuários.
+Campos:
+
+id: identificador da tarefa
+
+user_id: referência ao usuário (chave estrangeira)
+
+category_id: referência à categoria (chave estrangeira)
+
+title: título da tarefa
+
+description: descrição detalhada
+
+status: estado atual da tarefa (pendente, concluída, em progresso) usando tipo ENUM
+
+due_date: data limite para conclusão
+
+created_at: data de criação da tarefa
+
+Todos os relacionamentos são definidos com chaves estrangeiras, e o status das tarefas é controlado por um tipo ENUM chamado task_status, garantindo integridade e padronização.
+
+### 3.2. Arquitetura
+
+Cliente/Postman: O cliente (seja um navegador ou o Postman durante o desenvolvimento) inicia o processo enviando uma requisição HTTP. Essa requisição pode ser para criar uma nova tarefa (POST), obter uma lista de tarefas (GET), atualizar uma tarefa existente (PUT) ou deletar uma tarefa (DELETE).
+
+Rotas Express: As rotas Express recebem a requisição e a direcionam para o Controller apropriado. Por exemplo, uma requisição para /api/tasks pode ser roteada para o TaskController.
+
+Controller (TaskController): O Controller recebe a requisição das rotas. Ele processa a lógica de negócio necessária:
+
+Se for uma requisição para obter dados (GET), o Controller solicita os dados do Model.
+Se for uma requisição para criar, atualizar ou deletar dados (POST, PUT, DELETE), o Controller interage com o Model para realizar essas operações no banco de dados.
+Model (implícito no TaskController): No seu projeto Taskly, a lógica do Model está implementada diretamente no TaskController.js. O Controller usa pool.query() para interagir com o banco de dados PostgreSQL, realizando as operações CRUD (Create, Read, Update, Delete) nas tabelas (por exemplo, tasks, users).
+
+Banco de Dados PostgreSQL: O banco de dados armazena os dados do seu projeto. O Model (através do Controller) envia consultas SQL para o banco de dados e recebe os resultados (dados solicitados ou confirmação das operações).
+
+Controller (retorno): O Controller recebe os dados do banco de dados (através do Model). Ele pode formatar esses dados, se necessário.
+
+Rotas Express (retorno): As rotas Express recebem os dados do Controller e os enviam de volta ao cliente em um formato adequado (geralmente JSON).
+
+Cliente/Postman (recebimento): O cliente recebe a resposta e a exibe ao usuário (no caso de uma interface web) ou a utiliza para testes (no caso do Postman).
+
+Em resumo, o fluxo é: Cliente -> Rotas -> Controller -> Model (banco de dados) -> Controller -> Rotas -> Cliente. O Controller atua como intermediário, coordenando a interação entre a View (representada pelo Cliente) e o Model (a lógica de acesso aos dados, que no seu caso está dentro do Controller).
 
 ### 3.3. Wireframes (Semana 03 - opcional)
 
@@ -155,9 +222,106 @@ CREATE TABLE Tasks (
 
 *Posicione aqui algumas imagens demonstrativas de seu protótipo de alta fidelidade e o link para acesso ao protótipo completo (mantenha o link sempre público para visualização).*
 
-### 3.6. WebAPI e endpoints (Semana 05)
+### 3.6. WebAPI e endpoints 
 
- 
+Base URL:
+
+bash
+Copiar
+Editar
+http://localhost:8080/api
+🔸 1. Criar Tarefa
+Método: POST
+
+Endpoint: /tasks
+
+Descrição: Cria uma nova tarefa vinculada a um usuário e uma categoria.
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "user_id": 1,
+  "category_id": 1,
+  "title": "Estudar lógica de programação",
+  "description": "Revisar operadores lógicos",
+  "status": "pendente",
+  "due_date": "2025-06-01"
+}
+Respostas:
+
+201 Created: tarefa criada com sucesso
+
+500 Internal Server Error: erro ao inserir tarefa
+
+🔸 2. Listar Todas as Tarefas
+Método: GET
+
+Endpoint: /tasks
+
+Descrição: Retorna uma lista de todas as tarefas, incluindo nome do usuário e categoria.
+
+🔸 3. Buscar Tarefa por ID
+Método: GET
+
+Endpoint: /tasks/:id
+
+Descrição: Retorna uma tarefa específica pelo seu id.
+
+🔸 4. Atualizar Tarefa
+Método: PUT
+
+Endpoint: /tasks/:id
+
+Descrição: Atualiza os dados de uma tarefa.
+
+Body (JSON):
+
+json
+Copiar
+Editar
+{
+  "user_id": 1,
+  "category_id": 1,
+  "title": "Estudar JavaScript",
+  "description": "Curso completo de JS",
+  "status": "em progresso",
+  "due_date": "2025-06-02"
+}
+Respostas:
+
+200 OK: tarefa atualizada
+
+404 Not Found: tarefa não encontrada
+
+🔸 5. Excluir Tarefa
+Método: DELETE
+
+Endpoint: /tasks/:id
+
+Descrição: Remove uma tarefa do sistema.
+
+Resposta:
+
+200 OK: tarefa excluída com sucesso
+
+404 Not Found: tarefa não encontrada
+
+🔸 6. Listar Tarefas por Usuário
+Método: GET
+
+Endpoint: /users/:user_id/tasks
+
+Descrição: Retorna todas as tarefas vinculadas a um determinado usuário.
+
+🔸 7. Listar Tarefas por Categoria
+Método: GET
+
+Endpoint: /categories/:category_id/tasks
+
+Descrição: Retorna todas as tarefas de uma categoria específica.
 
 ### 3.7 Interface e Navegação (Semana 07)
 
