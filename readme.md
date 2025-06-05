@@ -17,9 +17,12 @@ projeto-individual-m2-t17/
 │   └── assets/
 │   └── wad.md
 ├── models/
+│   └── Category.js
+│   └── Task.js
 │   └── User.js
 ├── node_modules/
 ├── routes/
+│   └── frontRoutes.js
 │   └── index.js
 ├── scripts/
 │   └── init.sql
@@ -29,6 +32,11 @@ projeto-individual-m2-t17/
 ├── styles/
 ├── tests/
 │   └── exemple.test.js
+├── views/
+│   └── pages/
+│   └── page1.ejs
+│   └── styles/
+│   └── page1Style.css/
 ├── .env
 ├── .gitattributes
 ├── jest.config.js
