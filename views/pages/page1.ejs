@@ -19,10 +19,11 @@
         <section>
             <h2>Resumo do Sistema</h2>
             <div>
-                <p>Total de Tarefas: <%= tasks.length %></p>
-                <p>Total de Usuários: <%= users.length %></p>
-                <p>Total de Categorias: <%= categories.length %></p>
+                <p id="total-tasks">Total de Tarefas: <%= tasks.length %></p>
+                <p id="total-users">Total de Usuários: <%= users.length %></p>
+                <p id="total-categories">Total de Categorias: <%= categories.length %></p>
             </div>
+            <button onclick="atualizarEstatisticas()">🔄 Atualizar</button>
         </section>
 
         <section>
@@ -38,6 +39,7 @@
                             <th>Usuário</th>
                             <th>Categoria</th>
                             <th>Data de Vencimento</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,10 +48,21 @@
                             <td><%= task.id %></td>
                             <td><%= task.title %></td>
                             <td><%= task.description %></td>
-                            <td><%= task.status %></td>
+                            <td>
+                                <select onchange="atualizarStatusTarefa('<%= task.id %>', this.value)">
+                                    <option value="pendente" <%= task.status === 'pendente' ? 'selected' : '' %>>Pendente</option>
+                                    <option value="em andamento" <%= task.status === 'em andamento' ? 'selected' : '' %>>Em andamento</option>
+                                    <option value="concluída" <%= task.status === 'concluída' ? 'selected' : '' %>>Concluída</option>
+                                </select>
+                            </td>
                             <td><%= task.user_name || 'Não definido' %></td>
                             <td><%= task.category_name || 'Sem categoria' %></td>
                             <td><%= task.due_date ? new Date(task.due_date).toLocaleDateString('pt-BR') : 'Não definida' %></td>
+                            <td>
+                                <button onclick="excluirTarefa('<%= task.id %>')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                                    🗑️ Excluir
+                                </button>
+                            </td>
                         </tr>
                         <% }); %>
                     </tbody>
@@ -95,5 +108,78 @@
     <footer>
         <p>Taskly - Sistema de Gerenciamento de Tarefas</p>
     </footer>
+
+    <script>
+        // Função para atualizar status de uma tarefa
+        async function atualizarStatusTarefa(taskId, novoStatus) {
+            try {
+                const response = await fetch(`/api/tasks/${taskId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: novoStatus })
+                });
+
+                if (response.ok) {
+                    alert('Status atualizado com sucesso!');
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    alert('Erro ao atualizar status: ' + (error.message || 'Erro desconhecido'));
+                }
+            } catch (err) {
+                alert('Erro de conexão: ' + err.message);
+            }
+        }
+
+        // Função para excluir uma tarefa
+        async function excluirTarefa(taskId) {
+            if (!confirm('Tem certeza que deseja excluir esta tarefa?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/tasks/${taskId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Tarefa excluída com sucesso!');
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    alert('Erro ao excluir tarefa: ' + (error.message || 'Erro desconhecido'));
+                }
+            } catch (err) {
+                alert('Erro de conexão: ' + err.message);
+            }
+        }
+
+        // Função para carregar estatísticas atualizadas
+        async function atualizarEstatisticas() {
+            try {
+                const [tasksResponse, usersResponse, categoriesResponse] = await Promise.all([
+                    fetch('/api/tasks'),
+                    fetch('/api/users'),
+                    fetch('/api/categories')
+                ]);
+
+                const tasks = await tasksResponse.json();
+                const users = await usersResponse.json();
+                const categories = await categoriesResponse.json();
+
+                // Atualizar os números na página usando IDs específicos
+                document.getElementById('total-tasks').textContent = `Total de Tarefas: ${tasks.length}`;
+                document.getElementById('total-users').textContent = `Total de Usuários: ${users.length}`;
+                document.getElementById('total-categories').textContent = `Total de Categorias: ${categories.length}`;
+
+                alert('Estatísticas atualizadas!');
+            } catch (err) {
+                alert('Erro ao atualizar estatísticas: ' + err.message);
+            }
+        }
+
+        // Atualizar estatísticas a cada 30 segundos (opcional - remova se não quiser)
+        // setInterval(atualizarEstatisticas, 30000);
+    </script>
 </body>
 </html>
