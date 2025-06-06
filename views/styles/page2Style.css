@@ -6,20 +6,59 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #eef2f7;
-  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
   color: #333;
+  line-height: 1.6;
+  padding: 0; /* Removido o padding que causava o deslocamento */
 }
 
-/* Container */
+/* Header - idêntico ao da page1 */
+header {
+  background-color: #4a90e2;
+  color: #fff;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-size: 2rem;
+  color: #fff;
+}
+
+nav {
+  margin-top: 0.5rem;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 1rem;
+  background-color: #357ABD;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #2a65a0;
+}
+
+/* Container principal */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Container do formulário */
 .container {
   background-color: #fff;
   border-radius: 12px;
   padding: 2rem;
   max-width: 800px;
-  margin: auto;
-  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 h1, h2 {
@@ -59,9 +98,18 @@ button:hover {
   background-color: #45a049;
 }
 
-/* Footer */
-footer {
-  text-align: center;
-  margin-top: 2rem;
-  color: #777;
+textarea {
+  resize: none;
+  height: 120px;
 }
+
+/* Footer - igual ao da page1 */
+footer {
+  background-color: #4a90e2;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
