@@ -50,6 +50,20 @@
           </select>
         </div>
 
+        <div>
+          <label for="status">Status:</label>
+          <select id="status" name="status" required>
+            <option value="pendente">Pendente</option>
+            <option value="em andamento">Em andamento</option>
+            <option value="concluída">Concluída</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="due_date">Data de Vencimento:</label>
+          <input type="date" id="due_date" name="due_date">
+        </div>
+
         <button type="button" onclick="criarTarefa()">Criar Tarefa</button>
       </form>
     </div>
@@ -66,6 +80,8 @@
         description: document.getElementById("description").value,
         user_id: document.getElementById("user_id").value,
         category_id: document.getElementById("category_id").value,
+        status: document.getElementById("status").value,
+        due_date: document.getElementById("due_date").value
       };
 
       const response = await fetch("/api/tasks", {
