@@ -1,17 +1,9 @@
-const pool = require('../config/database');
+const Task = require('../models/Task');
 
 // Criar uma nova tarefa
 exports.createTask = async (req, res) => {
-  const { user_id, category_id, title, description, status, due_date } = req.body;
-
-  const query = `
-    INSERT INTO Tasks (user_id, category_id, title, description, status, due_date)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
-  const values = [user_id, category_id, title, description, status, due_date];
-
   try {
-    const result = await pool.query(query, values);
-    const task = result.rows[0];
+    const task = await Task.create(req.body);
     res.status(201).json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -20,15 +12,9 @@ exports.createTask = async (req, res) => {
 
 // Listar todas as tarefas
 exports.listTasks = async (req, res) => {
-  const query = `
-    SELECT t.*, u.name as user_name, c.name as category_name 
-    FROM Tasks t
-    LEFT JOIN Users u ON t.user_id = u.id
-    LEFT JOIN Categories c ON t.category_id = c.id`;
-
   try {
-    const result = await pool.query(query);
-    res.status(200).json(result.rows);
+    const tasks = await Task.findAll();
+    res.status(200).json(tasks);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -36,22 +22,12 @@ exports.listTasks = async (req, res) => {
 
 // Obter uma tarefa específica
 exports.getTask = async (req, res) => {
-  const { id } = req.params;
-
-  const query = `
-    SELECT t.*, u.name as user_name, c.name as category_name 
-    FROM Tasks t
-    LEFT JOIN Users u ON t.user_id = u.id
-    LEFT JOIN Categories c ON t.category_id = c.id
-    WHERE t.id = $1`;
-  const values = [id];
-
   try {
-    const result = await pool.query(query, values);
-    if (result.rows.length === 0) {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
       return res.status(404).json({ message: 'Tarefa não encontrada' });
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -59,21 +35,12 @@ exports.getTask = async (req, res) => {
 
 // Atualizar uma tarefa
 exports.updateTask = async (req, res) => {
-  const { id } = req.params;
-  const { user_id, category_id, title, description, status, due_date } = req.body;
-
-  const query = `
-    UPDATE Tasks 
-    SET user_id = $1, category_id = $2, title = $3, description = $4, status = $5, due_date = $6
-    WHERE id = $7 RETURNING *`;
-  const values = [user_id, category_id, title, description, status, due_date, id];
-
   try {
-    const result = await pool.query(query, values);
-    if (result.rows.length === 0) {
+    const task = await Task.update(req.params.id, req.body);
+    if (!task) {
       return res.status(404).json({ message: 'Tarefa não encontrada' });
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(task);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -81,14 +48,9 @@ exports.updateTask = async (req, res) => {
 
 // Excluir uma tarefa
 exports.deleteTask = async (req, res) => {
-  const { id } = req.params;
-
-  const query = 'DELETE FROM Tasks WHERE id = $1 RETURNING *';
-  const values = [id];
-
   try {
-    const result = await pool.query(query, values);
-    if (result.rows.length === 0) {
+    const task = await Task.delete(req.params.id);
+    if (!task) {
       return res.status(404).json({ message: 'Tarefa não encontrada' });
     }
     res.status(200).json({ message: 'Tarefa excluída com sucesso' });
@@ -99,18 +61,9 @@ exports.deleteTask = async (req, res) => {
 
 // Listar tarefas por usuário
 exports.getTasksByUser = async (req, res) => {
-  const { user_id } = req.params;
-
-  const query = `
-    SELECT t.*, c.name as category_name 
-    FROM Tasks t
-    LEFT JOIN Categories c ON t.category_id = c.id
-    WHERE t.user_id = $1`;
-  const values = [user_id];
-
   try {
-    const result = await pool.query(query, values);
-    res.status(200).json(result.rows);
+    const tasks = await Task.findByUserId(req.params.user_id);
+    res.status(200).json(tasks);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -118,14 +71,9 @@ exports.getTasksByUser = async (req, res) => {
 
 // Listar tarefas por categoria
 exports.getTasksByCategory = async (req, res) => {
-  const { category_id } = req.params;
-
-  const query = 'SELECT * FROM Tasks WHERE category_id = $1';
-  const values = [category_id];
-
   try {
-    const result = await pool.query(query, values);
-    res.status(200).json(result.rows);
+    const tasks = await Task.findByCategoryId(req.params.category_id);
+    res.status(200).json(tasks);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

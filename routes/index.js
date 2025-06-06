@@ -1,11 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const TaskController = require('../controllers/TaskController');
+const UserController = require('../controllers/UserController');
+const CategoryController = require('../controllers/CategoryController');
 
-// Rota raiz - GET /
+// Rota raiz da API
 router.get("/", (req, res) => {
-  res.send("Bem-vindo ao meu gerenciador de tarefas!");
+  res.json({ message: "Bem-vindo à API do Taskly!" });
 });
+
+// Rotas para usuários
+router.post('/users', UserController.createUser);
+router.get('/users', UserController.listUsers);
+router.get('/users/:id', UserController.getUser);
+router.put('/users/:id', UserController.updateUser);
+router.delete('/users/:id', UserController.deleteUser);
+
+// Rotas para categorias
+router.post('/categories', CategoryController.createCategory);
+router.get('/categories', CategoryController.listCategories);
+router.get('/categories/:id', CategoryController.getCategory);
+router.put('/categories/:id', CategoryController.updateCategory);
+router.delete('/categories/:id', CategoryController.deleteCategory);
 
 // Rotas para tarefas
 router.post('/tasks', TaskController.createTask);

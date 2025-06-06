@@ -35,8 +35,10 @@ projeto-individual-m2-t17/
 ├── views/
 │   └── pages/
 │   └── page1.ejs
+│   └── page2.ejs
 │   └── styles/
 │   └── page1Style.css/
+│   └── page2Style.css/
 ├── .env
 ├── .gitattributes
 ├── jest.config.js

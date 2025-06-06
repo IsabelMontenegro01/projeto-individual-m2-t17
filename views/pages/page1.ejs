@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+</head>
+<body>
+    <header>
+        <h1>Taskly - Dashboard</h1>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/manage">Gerenciar Tarefas</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Resumo do Sistema</h2>
+            <div>
+                <p>Total de Tarefas: <%= tasks.length %></p>
+                <p>Total de Usuários: <%= users.length %></p>
+                <p>Total de Categorias: <%= categories.length %></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Lista de Tarefas</h2>
+            <% if (tasks.length > 0) { %>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Descrição</th>
+                            <th>Status</th>
+                            <th>Usuário</th>
+                            <th>Categoria</th>
+                            <th>Data de Vencimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% tasks.forEach(task => { %>
+                        <tr>
+                            <td><%= task.id %></td>
+                            <td><%= task.title %></td>
+                            <td><%= task.description %></td>
+                            <td><%= task.status %></td>
+                            <td><%= task.user_name || 'Não definido' %></td>
+                            <td><%= task.category_name || 'Sem categoria' %></td>
+                            <td><%= task.due_date ? new Date(task.due_date).toLocaleDateString('pt-BR') : 'Não definida' %></td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>Nenhuma tarefa encontrada.</p>
+            <% } %>
+        </section>
+
+        <section>
+            <h2>Usuários Cadastrados</h2>
+            <% if (users.length > 0) { %>
+                <ul>
+                    <% users.forEach(user => { %>
+                    <li><%= user.name %> - <%= user.email %></li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>Nenhum usuário cadastrado.</p>
+            <% } %>
+        </section>
+
+        <section>
+            <h2>Categorias Disponíveis</h2>
+            <% if (categories.length > 0) { %>
+                <ul>
+                    <% categories.forEach(category => { %>
+                    <li><strong><%= category.name %></strong> - <%= category.description %></li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>Nenhuma categoria cadastrada.</p>
+            <% } %>
+        </section>
+
+        <% if (typeof error !== 'undefined') { %>
+            <div style="color: red;">
+                <p>Erro: <%= error %></p>
+            </div>
+        <% } %>
+    </main>
+
+    <footer>
+        <p>Taskly - Sistema de Gerenciamento de Tarefas</p>
+    </footer>
+</body>
+</html>

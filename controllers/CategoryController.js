@@ -1,15 +1,9 @@
-const pool = require('../config/database');
+const Category = require('../models/Category');
 
 // Criar uma nova categoria
 exports.createCategory = async (req, res) => {
-  const { name, description } = req.body;
-
-  const query = 'INSERT INTO Categories (name, description) VALUES ($1, $2) RETURNING *';
-  const values = [name, description];
-
   try {
-    const result = await pool.query(query, values);
-    const category = result.rows[0];
+    const category = await Category.create(req.body);
     res.status(201).json(category);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -18,11 +12,9 @@ exports.createCategory = async (req, res) => {
 
 // Listar todas as categorias
 exports.listCategories = async (req, res) => {
-  const query = 'SELECT * FROM Categories';
-
   try {
-    const result = await pool.query(query);
-    res.status(200).json(result.rows);
+    const categories = await Category.findAll();
+    res.status(200).json(categories);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -30,17 +22,12 @@ exports.listCategories = async (req, res) => {
 
 // Obter uma categoria específica
 exports.getCategory = async (req, res) => {
-  const { id } = req.params;
-
-  const query = 'SELECT * FROM Categories WHERE id = $1';
-  const values = [id];
-
   try {
-    const result = await pool.query(query, values);
-    if (result.rows.length === 0) {
+    const category = await Category.findById(req.params.id);
+    if (!category) {
       return res.status(404).json({ message: 'Categoria não encontrada' });
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(category);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -48,20 +35,12 @@ exports.getCategory = async (req, res) => {
 
 // Atualizar uma categoria
 exports.updateCategory = async (req, res) => {
-  const { id } = req.params;
-  const { name, description } = req.body;
-
-  const query = `
-    UPDATE Categories SET name = $1, description = $2
-    WHERE id = $3 RETURNING *`;
-  const values = [name, description, id];
-
   try {
-    const result = await pool.query(query, values);
-    if (result.rows.length === 0) {
+    const category = await Category.update(req.params.id, req.body);
+    if (!category) {
       return res.status(404).json({ message: 'Categoria não encontrada' });
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(category);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -69,14 +48,9 @@ exports.updateCategory = async (req, res) => {
 
 // Excluir uma categoria
 exports.deleteCategory = async (req, res) => {
-  const { id } = req.params;
-
-  const query = 'DELETE FROM Categories WHERE id = $1 RETURNING *';
-  const values = [id];
-
   try {
-    const result = await pool.query(query, values);
-    if (result.rows.length === 0) {
+    const category = await Category.delete(req.params.id);
+    if (!category) {
       return res.status(404).json({ message: 'Categoria não encontrada' });
     }
     res.status(200).json({ message: 'Categoria excluída com sucesso' });
