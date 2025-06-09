@@ -1,6 +1,6 @@
 # Gerenciador de Tarefas
 
-Este é um sistema de Gerenciador de Tarefas desenvolvido como parte do projeto individual da disciplina de Computação do Inteli. O objetivo do sistema é facilitar a organização e produtividade, permitindo a criação, edição e exclusão de tarefas, além de gerenciamento de usuários.
+Este é um sistema de Gerenciador de Tarefas desenvolvido como parte do projeto individual da disciplina de Computação do Inteli. O sistema tem como objetivo permitir que usuários gerenciem tarefas de forma organizada, vinculando cada atividade a uma categoria específica. Ele oferece funcionalidades de criação, edição e exclusão de tarefas por meio de uma interface web interativa.
 
 ## 📁 Estrutura de Pastas e Arquivos
 
@@ -92,7 +92,7 @@ npm run init-db
 npm run dev
 ```
 
-6. O servidor estará disponível em: `http://localhost:8080/api`
+6. O servidor estará disponível em: `http://localhost:8080/`
 
 ## 🛠️ Tecnologias Utilizadas
 
